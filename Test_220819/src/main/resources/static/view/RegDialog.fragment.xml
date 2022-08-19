@@ -1,0 +1,33 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Dialog title="등록 및 수정" contentWidth="60%" class="dialog-1" id="regDialog" >
+		<VBox  class="fmi-dialog-fragment">
+			<Image src="/view/images/close_white_24dp.svg" class="imgClose900" press="onPressClose"/>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center"> <!-- alignItems="Center" : 교차축의 중앙에 위치-->
+				<Text text="keyId : " class="sapUiLargeMarginEnd" />
+				<Input id="col1" value="{updateData>/col1}" />
+			</HBox>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="name : " class="sapUiLargeMarginEnd" />
+				<Input id="col2" value="{updateData>/col2}" />
+			</HBox>
+		 	<!-- <HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="address : " class="sapUiMediumMarginEnd" />
+				<Input id="col3" value="{updateData>/col3}" />
+			</HBox> -->
+			<HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="address : " class="sapUiMediumMarginEnd" />
+				<ComboBox id="col3"   items="{address>/}" selectedKey="{updateData>/col3}" > <!-- change="handleChange -->
+				<!-- <ComboBox id="col3" selectedKey="{updateData>/col3}"  items="{address>/}"> -->
+					<core:Item key="{address>subCd}" text="{address>subCdNm}"/>
+				</ComboBox>
+			</HBox>
+		</VBox>
+		<HBox justifyContent="Center">
+			<Button id="savebtn" text="저장" press="onPressSaveBtn"  />
+		</HBox>
+	</Dialog>
+</core:FragmentDefinition>
+				<!-- <core:Item key="seoul" text="서울" />
+				<core:Item key="incheon" text="인천" /> -->

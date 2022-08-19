@@ -1,0 +1,26 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+       
+    #VPN
+   # url: jdbc:postgresql://192.168.1.142:5432/kn_db
+    url: jdbc:postgresql://211.232.75.41:5433/test
+    username: mes_user
+    password: mes_pwd
+  jpa:   
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+        format_sql: true
+ 

@@ -1,0 +1,24 @@
+.title-1 {
+	color: #4f5b62 !important;
+	font-weight: 700;
+	font-size: 24px;
+}
+
+.layout-1 {
+	padding : 30px;
+}
+
+.fmi-dialog-fragment{padding : 7px 20px;}
+
+.imgClose900{
+		 position: fixed;
+		 right: 7px;
+		 width: 21px !important;
+		 cursor: pointer;
+		 top:13px;
+}
+
+.imgClose900:hover{ background: #3c3c3c5a;}
+
+.dialog-1>header>div {background-color: #44a0e3 !important;}
+.dialog-1>header>div h2 {color : white !important;}

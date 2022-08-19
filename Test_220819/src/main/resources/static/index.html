@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=0.5, user-scalable=yes"> 
+	
+	<title>test_220801</title>
+	<script 
+		id="sap-ui-bootstrap"
+		src="/openui5/sap-ui-core.js"
+		data-sap-ui-theme="sap_belize"
+		data-sap-ui-compatVersion="edge"
+		data-sap-ui-async="true"
+		data-sap-ui-frameOptions="trusted"
+		data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+		data-sap-ui-xx-waitForTheme="true" 
+		data-sap-ui-logLevel="3"
+		data-sap-ui-language="ko"
+		data-sap-ui-resourceroots='{"root":"./" , "view":"./view"}'>/*  //네임스페이스자원이 있는 위치를 지정. //data-sap-ui-xx-waitForTheme : 테마가 로드되고 적용될 때까지 특정 작업을 연기하도록 앱에 지시 */
+	</script>
+	<script>
+		sap.ui.getCore().attachInit(function() {
+			new sap.ui.core.ComponentContainer("root", {
+				height : "100%",
+				name : "root"
+			}).placeAt("content");
+		});
+	</script>
+</head>
+
+<body class="sapUiBody" id="content">
+</body>
+</html>

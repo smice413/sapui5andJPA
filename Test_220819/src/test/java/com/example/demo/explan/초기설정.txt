@@ -1,0 +1,2 @@
+초기설정
+openui5의 버전 차이로 인한 x표시는 build path에서 include를 검색하여 exclude자리에 **/*.js를 추가한다.

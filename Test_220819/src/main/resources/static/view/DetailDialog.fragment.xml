@@ -1,0 +1,40 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Dialog title="상세정보" contentWidth="40%" class="dialog-1" id="detailDialog">
+		<VBox  class="fmi-dialog-fragment">
+			<Image src="/view/images/close_white_24dp.svg" class="imgClose900" press="onPressCloseDetailDialog"/>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center"> <!-- alignItems="Center" : 교차축의 중앙에 위치-->
+				<Text text="col1 : " class="sapUiMediumMarginEnd" />
+				<Input  value="{detail>/col1}" />
+			</HBox>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="col2 : " class="sapUiMediumMarginEnd" />
+				<Input  value="{detail>/col2}" />
+			</HBox>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="co3 : " class="sapUiMediumMarginEnd" />
+				<Input  value="{path : 'detail>/col3', formatter: '.comSubCdNm'}" />
+			</HBox>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="sub3 : " class="sapUiMediumMarginEnd" />
+				<Input  value="{detail>/subEntity/sub3}" />
+			</HBox>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="sub4 : " class="sapUiMediumMarginEnd" />
+				<Input value="{detail>/subEntity/sub4}" />
+			</HBox>
+			<HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="포함유무 : " class="sapUiMediumMarginEnd" />
+				<Input value="{= ${detail>/subEntity/sub3} === '광역시' ? '맞음' : '아님'}" />
+			</HBox>
+			<!-- <HBox class="sapUiSmallMarginTop" alignItems="Center">
+				<Text text="address : " class="sapUiMediumMarginEnd" />
+				<ComboBox id="col3"  items="{address>/}">
+					<core:Item key="{address>}" text="{address>}"/>
+				</ComboBox>
+			</HBox> -->
+		</VBox>
+		
+	</Dialog>
+</core:FragmentDefinition>
