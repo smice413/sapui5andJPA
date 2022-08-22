@@ -79,7 +79,7 @@ sap.ui.define([
 			console.log(idx);
 			var table = e.getSource();
 			if(table.getSelectedIndices().includes(idx)){ 
-				this.onPressDetailDialog();
+			//	this.onPressDetailDialog();
 // getSelectedIndices: 배열에 래핑된 선택된 항목의 0부터 시작하는 인덱스입니다. 빈 배열은 "선택 사항 없음"을 의미합니다. 선택한 인덱스를 배열로 반환합니다.
 // includes(idx) : includes()메서드는 배열이 항목 사이에 특정 값을 포함하는지 여부를 확인하여 적절하게 반환합니다 true/false.
 				table.removeSelectionInterval(idx, idx);
@@ -95,6 +95,15 @@ sap.ui.define([
 			this.setModel(new JSONModel(testdata), "detail");
 			
         },
+		
+		// 리스트 목록 더블클릭시 상세보기 Dialog 띄우기
+		onAfterRendering : function () {
+			var that = this;
+			this.table.ondblclick = function () {
+				that.onPressDetailDialog();
+			}
+		},
+		
 		
 		// 상세보기 Dialog open
 		onPressDetailDialog: function(){
