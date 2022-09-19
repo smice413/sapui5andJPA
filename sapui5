@@ -1,0 +1,7 @@
+var test = new Date(this.byId("salesStartDate").getDateValue()); //new Date객체를 선언한 이유는 주소값을 다르게 하기 위함.
+test.setHours(test.getHours() +1);
+this.byId("salesEndDate").setDateValue(new Date(test)); //new Date의 소괄호안에 값을 넣어야 데이터구조가 맞다.
+
+*얕은복사 깊은복사
+얕은복사 :객체의 복사이기 때문에 같은 주소값을 가지고 있어 복사된 데이터가 변환되면 원본도 같이 변환된다.
+깊은복사 :데이터 자체를 모두 복사하는 것으로 참조타입이 아닌 일반 변수의 데이터의 경우 독립적으로 데이터가 변환가능하다.
