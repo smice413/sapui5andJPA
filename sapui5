@@ -7,3 +7,4 @@ this.byId("salesEndDate").setDateValue(new Date(test)); //new Date의 소괄호�
 깊은복사 :데이터 자체를 모두 복사하는 것으로 참조타입이 아닌 일반 변수의 데이터의 경우 독립적으로 데이터가 변환가능하다.
 
 깊은 복사를 하기 위해서는 this.deepClone(데이터)을 써야한다. ex)this.deepClone(this.getModel("jsonModel").getProperty("/"));
+자바스크립트의 경우 변수.clone()을 하면 깊은 복사가 가능하다. 객체의 경우.clone()으로 깊은 복사를 할 수 없고, 대신 new 객체를 새로 선언하여 넣어야한다. 
