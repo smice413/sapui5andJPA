@@ -1,3 +1,5 @@
+@Enumerated(EnumType.ORDINAL) 또는 @Enumerated(EnumType.STRING)을 대체해서 쓸 수 있다.
+
 Attribute Converter에 대해서 알아보자.
 
 말 그대로 속성 변환기이다.
