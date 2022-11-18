@@ -1,0 +1,207 @@
+Attribute Converter에 대해서 알아보자.
+
+말 그대로 속성 변환기이다.
+
+다음 그림과 같이 엔티티와 DB 사이에서 동작한다.
+
+영속성 컨텍스트--->Attribute Converter ---> DB
+
+
+흔히 개발을 진행하다 보면 DB에는 코드성의 데이터가 쌓이게 된다. 
+
+가령 gender 컬럼에 존재하는 데이터가 (1 이면 남자) (2 이면 여자)와 같은 식이거나 
+
+은행 컬럼에 존재하는 데이터가 (1 이면 신한은행) (2 이면 국민은행)과 같은 경우이다.
+
+허나 웹 애플리케이션에서는 DB에 존재하는 1이나 2와 같은 코드성의 데이터를 화면에 출력하는 일은 거의 없을 것이다.
+
+화면상에서는 코드에 부여한 의미 있는 문자열을 보여줘야 한다.
+
+이런 경우 처리할 수 있는 방법은 entity의 속성에 저장되어 있는 integer 값을 if 조건으로 분기처리하는 방법이 있다.
+
+그렇지만 이와 같은 방법은 많은 중복 코드와 유지보수에 어려움을 줄 수 있다.
+
+이런 코드 관리의 어려움을 해소하고자 Attribute Converter가 생겨났다.
+
+
+
+테스트를 통해서 확인해보자.
+
+
+
+컨버터의 대상이 되는 속성은 gender 이다.
+
+엔티티 클래스에는 String 타입으로 선언하면 된다. (대게 enum을 사용하지만 테스트를 위해 String으로 했다.)
+
+컨버터를 등록하면 DB에 저장할 때 integer로 변환될 것이다.
+
+private String gender;
+
+
+AttributeConverter 인터페이스를 구현하는 GenderAttributeConverter 를 생성하고 String 값을 Integer로 변환 해주는 convertToDatabaseColumn 메서드를 구현한다. (아래 full 소스가 있다.)
+
+@Override
+public Integer convertToDatabaseColumn(String s) {
+    if ("남자".equals(s)) {
+        return 1;
+    } else if ("여자".equals(s)) {
+        return 2;
+    }
+    return 0;
+}
+
+
+gender속성에 컨버터를 등록하자.
+@Convert(converter = GenderAttributeConverter.class)
+private String gender;
+
+테스트 실행
+
+정말로 gender 컬럼에 1 이라는 값이 저장되어 있는지 확인하기 위해 native query를 이용했다.
+@Test
+@Transactional
+public void Attribute_컨버터() {
+    // 테스트 데이터
+    Member member = new Member();
+    member.setId(1);
+    member.setGender("남자");
+    member.setChanged(new Date());
+    member.setRegistered(LocalDateTime.now());
+ 
+    em.persist(member);
+    em.flush();
+    em.clear();
+ 
+    // native query를 이용하여 gender = 1 조회
+    Query query = em.createNativeQuery("select * from MEMBER_CONVERTER where gender = :gender", Member.class);
+    query.setParameter("gender", 1);
+    List<Member> list = query.getResultList();
+ 
+    // 검증
+    String resultGender = list.get(0).getGender();
+    assertThat("남자", is(resultGender));
+}
+
+테이블 형태는 다음과 같다.
+
+gender 컬럼이 integer 타입으로 되어 있음
+create table member_converter (
+    id integer not null,
+    changed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    gender integer,
+    registered TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    primary key (id)
+)
+
+
+위의 테스트 케이스를 수행하면 insert 문이 생성되는데 그 로그를 확인해 보면 "남자" 문자열이 1로 변환됨을 알 수 있다.
+insert 
+    into
+        member_converter
+        (changed, gender, registered, id) 
+    values
+        (?, ?, ?, ?)
+ 
+binding parameter [1] as [TIMESTAMP] - [Tue Aug 22 17:21:09 KST 2017]
+    Converted value on binding : 남자 -> 1
+binding parameter [2] as [INTEGER] - [1]
+    Converted value on binding : 2017-08-22T17:21:09.626 -> Tue Aug 22 17:21:09 KST 2017
+binding parameter [3] as [TIMESTAMP] - [Tue Aug 22 17:21:09 KST 2017]
+binding parameter [4] as [INTEGER] - [1]
+
+
+------------------------------------------------------
+컨버터 구현은 AttributeConverter 인터페이스를 구현하면 된다.
+
+convertToDatabaseColumn 메서드가 DB로 저장해야 하는 데이터를 컨버터 하는 역할을 하고
+
+convertToEntityAttribute 메서드가 DB에 저장되어 있는 데이터를 속성으로 변환해 주는 역할을 한다.
+
+
+
+@Converter(autoApply = true) 와 같이 글로벌하게 설정도 가능하다. 특정 속성에 @Convert(converter = ..._) 가 등록되지 않아도 된다는 의미이다.
+
+
+
+Converter라는 역할을 하는 추상화된 개념을 도입함으로써 OOP스러우면서 재사용성이 뛰어남을 알 수 있다.	
+
+
+-----------------------------------------------------------------------------
+[전체 소스]
+
+@Slf4j
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class AttributeConverterTest {
+ 
+    @PersistenceContext
+    private EntityManager em;
+ 
+    @Test
+    @Transactional
+    public void Attribute_컨버터() {
+        Member member = new Member();
+        member.setId(1);
+        member.setGender("남자");
+        member.setChanged(new Date());
+        member.setRegistered(LocalDateTime.now());
+ 
+        em.persist(member);
+        em.flush();
+        em.clear();
+ 
+        // native query를 이용하여 gender = 1 조회
+        Query query = em.createNativeQuery("select * from MEMBER_CONVERTER where gender = :gender", Member.class);
+        query.setParameter("gender", 1);
+        List<Member> list = query.getResultList();
+ 
+        // 검증
+        String resultGender = list.get(0).getGender();
+        assertThat("남자", is(resultGender));
+    }
+}
+ 
+ 
+@Data
+@Table(name = "MEMBER_CONVERTER")
+@Entity
+class Member {
+ 
+    @Id
+    private int id;
+ 
+    @Convert(converter = GenderAttributeConverter.class)
+    private String gender;
+ 
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime registered;
+ 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date changed;
+}
+ 
+@Converter
+public class GenderAttributeConverter implements AttributeConverter<String, Integer> {
+ 
+    @Override
+    public Integer convertToDatabaseColumn(String s) {
+        if ("남자".equals(s)) {
+            return 1;
+        } else if ("여자".equals(s)) {
+            return 2;
+        }
+        return 0;
+    }
+ 
+    @Override
+    public String convertToEntityAttribute(Integer code) {
+        if (1 == code) {
+            return "남자";
+        } else if (2 == code) {
+            return "여자";
+        }
+        return "뭐지?";
+    }
+}
