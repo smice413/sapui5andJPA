@@ -1,0 +1,15 @@
+
+where 
+			+ "(case when :status = 'all' then 1=1 else p.status_cd = :status end) and "
+//			+ "case when :projectYear = 'all' then 1=1 else prj_start_date like %:projectYear% end " 
+//db칼럼의 데이터에 변수의 값이 없을 때 then 1=1로 통과되어야 하는데, like %%를 쓰게 되면 값을 구해오지 못하는 버그 발생. 
+//별도의 오류경고가 발생하지 않음.db상에서는 괜찮은데 repository에서만 발생함.
+			+ "(case when :projectYear = 'all' then 1=1 else split_part(prj_start_date,'-',1)  =  :projectYear end) "
+//split_part(prj_start_date,'-',1) --> split_part(칼럼명, 파싱특수기호'-', 파싱 후 가져올 인덱스 위치) 예) 2022-01-01 --> 2022만 추출함      
+order by
+			+ "case when :status = 'proposal' then COALESCE(p.prj_start_date,'2000-01-01') end asc, "
+			+ "case when :status = 'proposal' then p.prj_end_date end asc, "
+			+ "case when :status != 'proposal' then COALESCE(p.prj_start_date,'2000-01-01') end desc, "
+			+ "case when :status != 'proposal' then p.prj_end_date end desc "
+//order by 절에 case when을 작성시 end 후에만 asc와 desc를 쓸 수 있다. order by 의 1순위 정렬과, 2순위 정렬을 하기 위해 
+//콤마(,)기준(정렬시 콤마기준으로 왼쪽 부터 1순위임)으로 case when 을 작성하였다.     
