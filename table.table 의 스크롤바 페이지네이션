@@ -1,0 +1,11 @@
+//table.table 의 스크롤바 페이지네이션
+
+$("#"+this.byId("clientListTable").getId()+"-vsb").scroll(function(e){
+					var scrollTop =that.byId("clientListTable")._getScrollExtension().getVerticalScrollbar().scrollTop;
+					var scrollbarHeight = that.byId("clientListTable")._getScrollExtension().getVerticalScrollbarHeight();
+					var scrollHeight = that.byId("clientListTable")._getScrollExtension().getVerticalScrollHeight();
+				
+				if(scrollHeight == scrollTop + scrollbarHeight)	{
+					alert("list 갱신");
+				}
+				});
