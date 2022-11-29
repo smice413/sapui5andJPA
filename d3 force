@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device-width, initial-scale-1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie-edge">
+        <title>D3 TEST</title>
+    </head>
+    <body>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+        
+        <svg width="800" height="1000"></svg>
+        <script>
+           $(function() { 
+            const data = {"nodes":[{"id":"Microsoft"},{"id":"Amazon"},{"id":"HTC"},{"id":"Samsung"},{"id":"Apple"},{"id":"Motorola"},{"id":"Nokia"},{"id":"Kodak"},{"id":"Barnes & Noble"},{"id":"Foxconn"},{"id":"Oracle"},{"id":"Google"},{"id":"Inventec"},{"id":"LG"},{"id":"RIM"},{"id":"Sony"},{"id":"Qualcomm"},{"id":"Huawei"},{"id":"ZTE"},{"id":"Ericsson"}],
+                          "links":[{"source":"Microsoft","target":"Amazon","type":"test"},{"source":"Microsoft","target":"HTC","type":"licensing"},{"source":"Samsung","target":"Apple","type":"suit"},{"source":"Motorola","target":"Apple","type":"suit"},{"source":"Nokia","target":"Apple","type":"resolved"},{"source":"HTC","target":"Apple","type":"suit"},{"source":"Kodak","target":"Apple","type":"suit"},{"source":"Microsoft","target":"Barnes & Noble","type":"suit"},{"source":"Microsoft","target":"Foxconn","type":"suit"},{"source":"Oracle","target":"Google","type":"suit"},{"source":"Apple","target":"HTC","type":"suit"},{"source":"Microsoft","target":"Inventec","type":"suit"},{"source":"Samsung","target":"Kodak","type":"resolved"},{"source":"LG","target":"Kodak","type":"resolved"},{"source":"RIM","target":"Kodak","type":"suit"},{"source":"Sony","target":"LG","type":"suit"},{"source":"Kodak","target":"LG","type":"resolved"},{"source":"Apple","target":"Nokia","type":"resolved"},{"source":"Qualcomm","target":"Nokia","type":"resolved"},{"source":"Apple","target":"Motorola","type":"suit"},{"source":"Microsoft","target":"Motorola","type":"suit"},{"source":"Motorola","target":"Microsoft","type":"suit"},{"source":"Huawei","target":"ZTE","type":"suit"},{"source":"Ericsson","target":"ZTE","type":"suit"},{"source":"Kodak","target":"Samsung","type":"resolved"},{"source":"Apple","target":"Samsung","type":"suit"},{"source":"Kodak","target":"RIM","type":"suit"},{"source":"Nokia","target":"Qualcomm","type":"suit"}]}
+            const links = data.links.map(d => Object.create(d));
+            const nodes = data.nodes.map(d => Object.create(d));
+            const width = 800;
+            const height = 1000;
+            const types = ["licensing", "suit", "resolved", "test"]
+            const color = d3.scaleOrdinal(types, d3.schemeCategory10) 
+            //d3.schemeCategory10은 10가지의 색으로 각 인덱스에 따라 배열에 들어가 있다. d3.schemeCategory10[3]이면 빨간색이다.
+            //4가지 타입에 따라 색이 선착순으로 정해진다. 즉, test가 types의 배열에 3번째 있기 때문에 바로 위의 설명처럼 빨간색이 표시된다.
+
+            const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id))  // 노드의 index에 따른 배열로 각 노드 좌표값이 설정된다. 
+            .force("charge", d3.forceManyBody().strength(-400)) //노드(점)들이 퍼져있는 정도 음수값이 될 수록 간격이 넓어진다.
+            .force("x", d3.forceX()) // 노드가 펼쳐짐에 있어서의 정도를 정해줌. 정해지지 않으면 가로방향으로 퍼져나간다.
+            .force("y", d3.forceY());// 위와 동일함. 세로방향으로 퍼져나감.
+
+            const svg = d3.selectAll("svg").append("svg")
+            .attr("viewBox", [-width/2 , -height / 2, width, height]) // 노드들이 있는 박스가 중앙에 위치시키기 위함
+            .style("font", "12px sans-serif");
+
+            svg.append("defs").selectAll("marker") //화살표의 삼각형에 대한 설정
+            .data(types)
+            .join("marker")
+            .attr("id", d => `arrow-${d}`)
+            .attr("viewBox", "0 -5 10 10") // 삼각형의 세로 가로의 그림이 보여지는 정도
+            .attr("refX", 15) //삼각형의 x좌표값
+            .attr("refY", -1) //삼각형의 y좌표값
+            .attr("markerWidth", 6) //삼각형 크기
+            .attr("markerHeight", 6) //삼각형 크기
+            .attr("orient", "auto")//선의 방향에 맞춰서 그려짐
+            .append("path")
+            .attr("fill", 'red') //화살표 색
+            .attr("d", "M0,-5L10,0L0,5");//삼각형 위치와 관련됨
+
+            const link = svg.append("g")
+            .attr("fill", "none")// 노드끼리의 일직선과 화살표의 곡선사이의 타원형모양의 색이 없는 상태
+            .attr("stroke-width", 1.5) //선과 화살표의 크기
+            .selectAll("path")
+            .data(links)
+            .join("path")
+            .attr("stroke", d => color(d.type))
+            .attr("marker-end", d => `url(${new URL(`#arrow-${d.type}`, location)})`);
+
+            const node = svg.append("g")
+            .attr("fill", "currentColor") //노드(점) 색
+            .attr("stroke-linecap", "round")
+            .attr("stroke-linejoin", "round")
+            .selectAll("g")
+            .data(nodes)
+            .join("g")
+            //.call(drag(simulation)); //마우스로 클릭해서 끌고 오는 것
+
+            node.append("circle")
+            .attr("stroke", "white")//점을 감싸고 있는 테두리 원
+            .attr("stroke-width", 1.5)
+            .attr("r", 4); //테두리 원의 곡선 정도
+
+            node.append("text")
+                .attr("x", 10) //노드로 부터 가로 방향으로 떨어져 있는 정도
+                .attr("y", "0.31em") //노드로 부터 세로 방향의 떨어진 위치
+                .text(d => d.id)
+                .clone(true).lower()
+                .attr("fill", "none")
+                .attr("stroke", "white")//글씨를 감싸고 있는 테두리 선색
+                .attr("stroke-width", 3); //글씨를 감싸고 있는 테두리 선 굵기
+          
+             
+            simulation.on("tick", () => { //점과 선의 좌표값 설정
+                link.attr("d", linkArc); //선설정
+                node.attr("transform", d => `translate(${d.x},${d.y})`);//점설정
+            });
+
+            //invalidation.then(() => simulation.stop());
+
+            return svg.node();
+           })
+            
+
+            function linkArc(d) {
+                const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y); // 선의 곡선정도 설정
+                return `
+                    M${d.source.x},${d.source.y}
+                    A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
+                `;
+            }
+            drag = simulation => {
+  
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+            }
+
+
+
+
+        </script>
+    </body>
+
+
+</html>
