@@ -138,6 +138,23 @@
                    // fill: false, //그래프의 선이 아닌 몸을 색깔로 채우기
                    // lineTension: 0, // 그래프의 곡선 정도
                     yAxisID: '1'
+                },
+                {
+                    label: '테스트 데이터3',
+                    data: [
+                        2,
+                        55,
+                        3,
+                        4,
+                        60,
+                        10,
+                        20
+                    ],
+                    borderColor: "rgba(250, 150, 14, 1)",
+                    backgroundColor: "rgba(10, 150, 14, 0.5)",
+                    fill: true, 
+                    lineTension: 1, 
+                    yAxisID: '2'
                 }
                ]
             },
@@ -163,6 +180,14 @@
                         position : 'right',
                         ticks : {color : 'blue'},
                         title :{display : true, text : '대기온도(C)', color :'rgba(14,160,232)'},
+                        border : {color: 'black'},
+                        type : "linear" 
+                    },
+                    '2':{
+                        grid :{color: 'orange', tickColor:'red'},
+                        position : 'right',
+                        ticks : {color : 'purple'},
+                        title :{display : true, text : '강수량', color :'rgba(190,160,232)'},
                         border : {color: 'black'},
                         type : "linear" 
                     }
