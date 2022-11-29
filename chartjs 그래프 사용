@@ -147,7 +147,8 @@
               
                 scales: {
                     x:{ //x는 id 
-                        grid : {display : false}
+                        grid : {display : false, color:'red'}, //false 축의 기준선 안보이게
+                        title :{display: true, text: 'x축'} //x축의 대표하는 제목
                     },
                     '0':{ //0도 위의 datasets에서 각 y축의 아이디와 동일함
                         grid :{color: 'pink', tickColor:'red'}, // color는 축의 선 색깔, tickColor 축 경계선에서 위로 살짝 나온 기준선 색깔
