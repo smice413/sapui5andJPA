@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.1.slim.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.0/chartjs-plugin-zoom.min.js"></script>
 
 
     <title>Document</title>
 </head>
 <body>
-    <div style="width:100%;">
+    <div style="width:100%">
         <canvas id="canvas"></canvas>
-      </div>
+    </div>
       <script>
 // $(function(){
 //     let ctx = document.getElementById('canvas').getContext('2d');
@@ -99,11 +100,26 @@
 //         }
 //     }
 // }
+        var predictionData = [10,40,20];
+        var dataDemo = [ 2, 55, 3, 4, 60, 10,30];
+        var skip ;
+        var skip2;
+       // var skipped;
+       if(predictionData.length + dataDemo.length >dataDemo.length){
+            var length1 = dataDemo.length;
+            for(var i=0; i<predictionData.length; i++){
+                dataDemo.push(predictionData[i]);
+                               
+            }        
+        }
+       const skipped = (ctx, value) => dataDemo.at(ctx.p1DataIndex + predictionData.length) == null ? value : undefined;
+
+    
 
         new Chart(document.getElementById("canvas"), {
             type: 'line',
             data: {
-                labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'], //x축의 각 라벨
+                labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G','predic','predic1','predic2'], //x축의 각 라벨
                 datasets: [
                     {
                     label: '테스트 데이터1', //그래프 각 선을 대표하는 이름
@@ -140,21 +156,18 @@
                     yAxisID: '1'
                 },
                 {
-                    label: '테스트 데이터3',
-                    data: [
-                        2,
-                        55,
-                        3,
-                        4,
-                        60,
-                        10,
-                        20
-                    ],
-                    borderColor: "rgba(250, 150, 14, 1)",
-                    backgroundColor: "rgba(10, 150, 14, 0.5)",
-                    fill: true, 
-                    lineTension: 1, 
-                    yAxisID: '2'
+                   label: '테스트 데이터3',
+                   data: dataDemo,
+                   borderColor: "rgba(250, 150, 14, 1)",
+                   backgroundColor: "rgba(10, 150, 14, 0.5)",
+                   fill: true, 
+                   lineTension: 0, 
+                   yAxisID: '2',
+                   segment: {
+                        borderColor: ctx => skipped(ctx, 'black') , //|| down(ctx, 'red')
+                        borderDash: ctx => skipped(ctx, [5, 5]),
+                   },
+                   //spanGaps: true
                 }
                ]
             },
@@ -192,11 +205,24 @@
                         type : "linear" 
                     }
                     
+                },
+                plugins:{
+                  zoom:{
+                        zoom:{
+                            mode:'x', //x축 기준, 즉 가로방향으로만 확대 축소 가능
+                            pinch:{enabled: true},
+                            wheel:{enabled: true} 
+                        }
+                    }
+                 
+                    
                 }
-            }
+            },
+            
         });
+         
         
-       
+        
 
 
         </script>    
