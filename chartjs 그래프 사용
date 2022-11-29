@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.1.slim.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <title>Document</title>
+</head>
+<body>
+    <div style="width:100%;">
+        <canvas id="canvas"></canvas>
+      </div>
+      <script>
+// $(function(){
+//     let ctx = document.getElementById('canvas').getContext('2d');
+//     let chart = new Chart(ctx, {
+//         type: 'line',
+//         data: chartData,
+//         options: chartOptions
+//     })
+// })
+
+// let chartData = {
+//     labels: ['A', 'B', 'C'],
+//     datasets: [
+//         {
+//             label: 'y axis left',
+//             yAxisID: 'y-left',
+//             data: [10, 20, 30],
+//             backgroundColor: [
+//                 'rgba(255, 99, 132, 0.2)',
+//                 'rgba(54, 162, 235, 0.2)',
+//                 'rgba(255, 206, 86, 0.2)'
+//             ],
+//             borderColor: [
+//                 'rgba(255, 99, 132, 1)',
+//                 'rgba(54, 162, 235, 1)',
+//                 'rgba(255, 206, 86, 1)'
+//             ],
+//             borderWidth: 1
+//         },
+//         {
+//             label: 'y axis right',
+//             yAxisID: 'y-right',
+//             data: [10000000, 5000000, 3000000],
+//             backgroundColor: [
+//                 'rgba(75, 192, 192, 0.2)',
+//                 'rgba(153, 102, 255, 0.2)',
+//                 'rgba(255, 159, 64, 0.2)'
+//             ],
+//             borderColor: [
+//                 'rgba(75, 192, 192, 1)',
+//                 'rgba(153, 102, 255, 1)',
+//                 'rgba(255, 159, 64, 1)'
+//             ],
+//             borderWidth: 1
+//         }
+//     ]
+// }
+ 
+// let chartOptions = {
+//     responsive:true,
+//     // maintainAspectRatio: false,
+//     scales: {
+//         x: {
+//             title: {
+//                 display: true,
+//                 text: 'X Axis Title'
+//             }
+//         },
+//         'y-left': {
+//             type: 'linear',
+//             position: 'left',
+//             title: {
+//                 display: true,
+//                 text: 'Y Axis Left'
+//             },
+//             grid: {
+//                 display: false
+//             }
+//         },
+//         'y-right': {
+//             type: 'linear',
+//             position: 'right',
+//             title: {
+//                 display: true,
+//                 text: 'Y Axis Right'
+//             },
+//             ticks: {
+//                 callback: (val) => (val.toExponential())
+//             },
+//             grid: {
+//                 display: false
+//             }
+//         }
+//     }
+// }
+
+        new Chart(document.getElementById("canvas"), {
+            type: 'line',
+            data: {
+                labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'], //x축의 각 라벨
+                datasets: [
+                    {
+                    label: '테스트 데이터1', //그래프 각 선을 대표하는 이름
+                    data: [
+                        10,
+                        3,
+                        30,
+                        23,
+                        10,
+                        5,
+                        50
+                    ],
+                    borderColor: "gray", //"rgba(255, 201, 14, 1)" //그래프 선(테두리) 색
+                    backgroundColor: "red", //그래프의 꼭지점(원) 색
+                    fill: false,    //true =그래프의 선이 아닌 몸을 색깔로 채우기
+                    lineTension: 0, //그래프의 곡선 정도
+                    yAxisID: '0'    //y축의 id
+                },
+                {
+                    label: '테스트 데이터2',
+                    data: [
+                        1,
+                        30,
+                        4,
+                        60,
+                        10,
+                        15,
+                        25
+                    ],
+                    borderColor: "rgba(150, 230, 14, 1)",
+                    backgroundColor: "rgba(150, 230, 14, 0.5)",
+                   // fill: false, //그래프의 선이 아닌 몸을 색깔로 채우기
+                   // lineTension: 0, // 그래프의 곡선 정도
+                    yAxisID: '1'
+                }
+               ]
+            },
+            options: {
+                interaction : {intersect : false, mode: 'index'}, //index는 x축을 따라서 마우스를 옮기면 그래프의 각 데이터를 확인 가능
+                responsive: true, //컨테이너가 변경되면 차트 캔버스의 크기를 조정 , 기본이 true
+              
+                scales: {
+                    x:{ //x는 id 
+                        grid : {display : false}
+                    },
+                    '0':{ //0도 위의 datasets에서 각 y축의 아이디와 동일함
+                        grid :{color: 'pink', tickColor:'red'}, // color는 축의 선 색깔, tickColor 축 경계선에서 위로 살짝 나온 기준선 색깔
+                        position : 'left', // 축의 위치
+                        ticks : {color : 'blue'}, //축의 기준값의 텍스트 색깔
+                        title :{display : true, text : '대기습도(%)', color :'rgba(227,64,253)'}, // 축을 대표하는 제목색
+                        border : {color: 'black'}, //축 경계선 색, 버전차이 인지 모르겠지만 경동에서는 위의 grid 옵션에서 borderColor로 색을 설정하여 y축의 경계선 색을 정했음.
+                        type : "linear"  //선 그래프이기 때문에 linear로 함, bar면 bar로 설정
+                    },
+                    '1':{
+                        grid :{color: 'skyblue', tickColor:'red'},
+                        position : 'right',
+                        ticks : {color : 'blue'},
+                        title :{display : true, text : '대기온도(C)', color :'rgba(14,160,232)'},
+                        border : {color: 'black'},
+                        type : "linear" 
+                    }
+                    
+                }
+            }
+        });
+        
+       
+
+
+        </script>    
+</body>
+</html>
+
+
