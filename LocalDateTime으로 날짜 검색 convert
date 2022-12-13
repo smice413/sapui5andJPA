@@ -1,0 +1,6 @@
+        LocalDate startDateToLocalDate =  LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	      LocalDateTime startDateTime = startDateToLocalDate.atStartOfDay();
+	      LocalDate endDateToLocalDate =  LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	      LocalDateTime endDateTime = endDateToLocalDate.atTime(23, 59, 59, 999999999);
+        
+        convert를 하지 않으면 between A and B 일때 B의 다음날짜(00시) 전까지의 시간을 조회하지 못한다.
